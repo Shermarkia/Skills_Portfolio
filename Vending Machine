@@ -1,0 +1,132 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip> 
+using namespace std;
+
+class Item {
+public:
+    string name;
+    string category;
+    double price;
+    int stock;
+
+    Item(string n, string c, double p, int s) {
+        name = n;
+        category = c;
+        price = p;
+        stock = s;
+    }
+};
+
+class VendingMachine {
+private:
+    vector<Item> items;   
+    double userMoney;     
+
+public:
+    VendingMachine() {
+        userMoney = 0.0;
+
+        items.push_back(Item("Coffee", "Drink", 2.00, 5));
+        items.push_back(Item("Chips", "Snack", 2.50, 5));
+        items.push_back(Item("Water", "Drink", 1.50, 5));
+        items.push_back(Item("Biscuits", "Snack", 1.00, 5));
+        items.push_back(Item("Soda", "Drink", 2.00, 5));
+        items.push_back(Item("Chocolate", "Snack", 2.25, 5));
+    }
+
+    void displayMenu() {
+        cout << "\n..............VENDING MACHINE MENU..............\n";
+        cout << fixed << setprecision(2);
+        for (int i = 0; i < items.size(); i++) {
+            cout << i + 1 << ". " << setw(10) << left << items[i].name
+                 << " | Category: " << setw(7) << left << items[i].category
+                 << " | Price (GBP): " << items[i].price
+                 << " | Stock: " << items[i].stock << endl;
+        }
+        cout << "------------------------------------------\n";
+    }
+    void insertMoney() {
+        cout << "\nInsert money (GBP): ";
+        cin >> userMoney;
+
+        while (cin.fail() || userMoney <= 0) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid input. Please insert a valid amount (GBP): ";
+            cin >> userMoney;
+        }
+
+        cout << "You have inserted GBP " << fixed << setprecision(2) << userMoney << endl;
+    }
+    void buyItem() {
+        int choice;
+        cout << "\nEnter item number (1 - " << items.size() << "): ";
+        cin >> choice;
+
+        if (cin.fail() || choice < 1 || choice > items.size()) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid selection! Please try again.\n";
+            return;
+        }
+
+        Item &selected = items[choice - 1];
+
+        if (selected.stock <= 0) {
+            cout << "Sorry, " << selected.name << " is out of stock!\n";
+            return;
+        }
+
+        if (userMoney < selected.price) {
+            cout << "Insufficient funds! Please add more money.\n";
+            return;
+        }
+
+        userMoney -= selected.price;
+        selected.stock--;
+
+        cout << "\nDispensing " << selected.name << "...\n";
+        cout << "Enjoy your " << selected.name << "!\n";
+        cout << "Your change: GBP " << fixed << setprecision(2) << userMoney << endl;
+
+        suggestItem(selected.category);
+        userMoney = 0;
+    }
+    void suggestItem(string category) {
+        if (category == "Drink") {
+            cout << "?? Suggestion: How about some snacks with your drink?\n";
+        } else if (category == "Snack") {
+            cout << "?? Suggestion: Maybe grab a drink to go with that!\n";
+        }
+    }
+};
+
+int main() {
+    VendingMachine machine;
+    int option;
+
+    cout << "..............WELCOME TO THE VENDING MACHINE.................\n";
+
+    do {
+        machine.displayMenu();   
+        machine.insertMoney();   
+        machine.buyItem();       
+
+        cout << "\nWould you like to buy another item? (1 = Yes, 0 = No): ";
+        cin >> option;
+
+        while (cin.fail() || (option != 0 && option != 1)) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "Invalid choice! Enter 1 (Yes) or 0 (No): ";
+            cin >> option;
+        }
+
+    } while (option == 1);
+
+    cout << "\nThank you for using the Vending Machine! Goodbye!\n";
+    return 0;
+}
+
