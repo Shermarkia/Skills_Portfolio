@@ -4,19 +4,12 @@
 #include <iomanip> 
 using namespace std;
 
-Item class
-    Represents a single product inside the vending machine.
-    Each item has a name, category, price, and available stock.
-
-
 class Item {
 public:
     string name;
     string category;
     double price;
     int stock;
-
-// Constructor to initialize an item with given details
 
     Item(string n, string c, double p, int s) {
         name = n;
@@ -26,21 +19,12 @@ public:
     }
 };
 
-
-
-    VendingMachine class
-    Handles all vending machine operations such as:
-    - Displaying items
-    - Taking user money
-    - Processing purchases
-
 class VendingMachine {
 private:
     vector<Item> items;   
     double userMoney;     
 
 public:
-// Constructor: sets initial money and loads default items
     VendingMachine() {
         userMoney = 0.0;
 
@@ -51,9 +35,6 @@ public:
         items.push_back(Item("Soda", "Drink", 2.00, 5));
         items.push_back(Item("Chocolate", "Snack", 2.25, 5));
     }
-    
-        // Displays the vending machine menu in a clean, formatted way
-    
 
     void displayMenu() {
         cout << "\n..............VENDING MACHINE MENU..............\n";
@@ -66,10 +47,6 @@ public:
         }
         cout << "------------------------------------------\n";
     }
-
-    
-       // Takes money from the user and validates input
-    
     void insertMoney() {
         cout << "\nInsert money (GBP): ";
         cin >> userMoney;
@@ -83,17 +60,10 @@ public:
 
         cout << "You have inserted GBP " << fixed << setprecision(2) << userMoney << endl;
     }
-
-    
-       // Handles item selection and purchase logic
-    
     void buyItem() {
         int choice;
         cout << "\nEnter item number (1 - " << items.size() << "): ";
         cin >> choice;
-
-       // Validate item choice
-
 
         if (cin.fail() || choice < 1 || choice > items.size()) {
             cin.clear();
@@ -101,39 +71,28 @@ public:
             cout << "Invalid selection! Please try again.\n";
             return;
         }
-       // Reference to selected item
 
         Item &selected = items[choice - 1];
-     // Check if item is available
-
 
         if (selected.stock <= 0) {
             cout << "Sorry, " << selected.name << " is out of stock!\n";
             return;
         }
-       // Check if item is available
+
         if (userMoney < selected.price) {
-  
-          // Check if user has enough money
             cout << "Insufficient funds! Please add more money.\n";
             return;
         }
-       // Process the purchase
-       userMoney -= selected.price;
+
+        userMoney -= selected.price;
         selected.stock--;
 
         cout << "\nDispensing " << selected.name << "...\n";
         cout << "Enjoy your " << selected.name << "!\n";
         cout << "Your change: GBP " << fixed << setprecision(2) << userMoney << endl;
 
-     // Suggest another item based on category
         suggestItem(selected.category);
-   // Reset money for next transaction
         userMoney = 0;
-
-
-    // Suggests a complementary item to improve user experience
-
     }
     void suggestItem(string category) {
         if (category == "Drink") {
@@ -150,8 +109,6 @@ int main() {
 
     cout << "..............WELCOME TO THE VENDING MACHINE.................\n";
 
-// Main loop allows multiple purchases
-
     do {
         machine.displayMenu();   
         machine.insertMoney();   
@@ -159,8 +116,6 @@ int main() {
 
         cout << "\nWould you like to buy another item? (1 = Yes, 0 = No): ";
         cin >> option;
-
-// Validate user decision
 
         while (cin.fail() || (option != 0 && option != 1)) {
             cin.clear();
@@ -174,6 +129,4 @@ int main() {
     cout << "\nThank you for using the Vending Machine! Goodbye!\n";
     return 0;
 }
-
-
 
