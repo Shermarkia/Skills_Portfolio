@@ -4,12 +4,9 @@
 #include <iomanip> 
 using namespace std;
 
-/*
-
 Item class
     Represents a single product inside the vending machine.
     Each item has a name, category, price, and available stock.
-/*
 
 
 class Item {
@@ -30,13 +27,13 @@ public:
 };
 
 
-/*
+
     VendingMachine class
     Handles all vending machine operations such as:
     - Displaying items
     - Taking user money
     - Processing purchases
-*/
+
 class VendingMachine {
 private:
     vector<Item> items;   
@@ -54,9 +51,9 @@ public:
         items.push_back(Item("Soda", "Drink", 2.00, 5));
         items.push_back(Item("Chocolate", "Snack", 2.25, 5));
     }
-    */
-        Displays the vending machine menu in a clean, formatted way
-    */
+    
+        // Displays the vending machine menu in a clean, formatted way
+    
 
     void displayMenu() {
         cout << "\n..............VENDING MACHINE MENU..............\n";
@@ -70,9 +67,9 @@ public:
         cout << "------------------------------------------\n";
     }
 
-    */
-        Takes money from the user and validates input
-    */
+    
+       // Takes money from the user and validates input
+    
     void insertMoney() {
         cout << "\nInsert money (GBP): ";
         cin >> userMoney;
@@ -87,9 +84,9 @@ public:
         cout << "You have inserted GBP " << fixed << setprecision(2) << userMoney << endl;
     }
 
-    */
-        Handles item selection and purchase logic
-    */
+    
+       // Handles item selection and purchase logic
+    
     void buyItem() {
         int choice;
         cout << "\nEnter item number (1 - " << items.size() << "): ";
@@ -134,9 +131,9 @@ public:
    // Reset money for next transaction
         userMoney = 0;
 
- /*
-        Suggests a complementary item to improve user experience
-    */
+
+    // Suggests a complementary item to improve user experience
+
     }
     void suggestItem(string category) {
         if (category == "Drink") {
@@ -177,5 +174,6 @@ int main() {
     cout << "\nThank you for using the Vending Machine! Goodbye!\n";
     return 0;
 }
+
 
 
