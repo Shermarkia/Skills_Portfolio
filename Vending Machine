@@ -4,13 +4,16 @@
 #include <iomanip> 
 using namespace std;
 
+// Represents a single product in our vending machine
+// Think of this as a digital version of a product tag on a shelf
 class Item {
 public:
-    string name;
-    string category;
-    double price;
-    int stock;
+    string name;      // What the product is called
+    string category;  // Helps organize items (Drink vs Snack)
+    double price;     // How much it costs (in British pounds)
+    int stock;        // How many are left in the machine
 
+    // Constructor - like a factory worker setting up a new product
     Item(string n, string c, double p, int s) {
         name = n;
         category = c;
@@ -19,27 +22,35 @@ public:
     }
 };
 
+// The brain of the operation - manages everything from money to inventory
 class VendingMachine {
 private:
-    vector<Item> items;   
-    double userMoney;     
+    vector<Item> items;   // Our product catalog (imagine a digital shelf)
+    double userMoney;     // Money the customer has inserted so far
 
 public:
+    // Setting up our vending machine with initial products
+    // This is like stocking the machine before opening for business
     VendingMachine() {
-        userMoney = 0.0;
+        userMoney = 0.0;  // Start with no money from customer
 
-        items.push_back(Item("Coffee", "Drink", 2.00, 5));
-        items.push_back(Item("Chips", "Snack", 2.50, 5));
-        items.push_back(Item("Water", "Drink", 1.50, 5));
-        items.push_back(Item("Biscuits", "Snack", 1.00, 5));
-        items.push_back(Item("Soda", "Drink", 2.00, 5));
-        items.push_back(Item("Chocolate", "Snack", 2.25, 5));
+        // Stocking our machine with some British favorites
+        items.push_back(Item("Coffee", "Drink", 2.00, 5));    // Morning pick-me-up
+        items.push_back(Item("Chips", "Snack", 2.50, 5));     // Crispy and salty
+        items.push_back(Item("Water", "Drink", 1.50, 5));     // Hydration station
+        items.push_back(Item("Biscuits", "Snack", 1.00, 5));  // Classic British snack
+        items.push_back(Item("Soda", "Drink", 2.00, 5));      // Fizzy refreshment
+        items.push_back(Item("Chocolate", "Snack", 2.25, 5)); // Sweet treat
     }
 
+    // Shows the customer what's available - like a digital menu board
     void displayMenu() {
         cout << "\n..............VENDING MACHINE MENU..............\n";
-        cout << fixed << setprecision(2);
+        cout << fixed << setprecision(2);  // Make sure prices look nice (2 decimal places)
+        
+        // Loop through each item and show its details
         for (int i = 0; i < items.size(); i++) {
+            // Display in a neat, table-like format so it's easy to read
             cout << i + 1 << ". " << setw(10) << left << items[i].name
                  << " | Category: " << setw(7) << left << items[i].category
                  << " | Price (GBP): " << items[i].price
@@ -47,53 +58,72 @@ public:
         }
         cout << "------------------------------------------\n";
     }
+
+    // Let's the customer insert money - like the coin slot on a real machine
     void insertMoney() {
         cout << "\nInsert money (GBP): ";
         cin >> userMoney;
 
+        // Handle grumpy customers who try to insert nonsense
+        // (or just accidental typos)
         while (cin.fail() || userMoney <= 0) {
-            cin.clear();
-            cin.ignore(1000, '\n');
+            cin.clear();                    // Clear the error flag
+            cin.ignore(1000, '\n');         // Ignore the bad input
             cout << "Invalid input. Please insert a valid amount (GBP): ";
             cin >> userMoney;
         }
 
+        // Confirm to the customer what they've inserted
         cout << "You have inserted GBP " << fixed << setprecision(2) << userMoney << endl;
     }
+
+    // The main event - customer picks an item and we try to deliver it
     void buyItem() {
         int choice;
         cout << "\nEnter item number (1 - " << items.size() << "): ";
         cin >> choice;
 
+        // First check: Did they enter something that makes sense?
         if (cin.fail() || choice < 1 || choice > items.size()) {
             cin.clear();
             cin.ignore(1000, '\n');
             cout << "Invalid selection! Please try again.\n";
-            return;
+            return;  // Give up and let them try again later
         }
 
-        Item &selected = items[choice - 1];
+        // Get a reference to the selected item (so we can modify it)
+        Item &selected = items[choice - 1];  
 
+        // Second check: Is this item actually available?
         if (selected.stock <= 0) {
             cout << "Sorry, " << selected.name << " is out of stock!\n";
             return;
         }
 
+        // Third check: Did they insert enough money?
         if (userMoney < selected.price) {
             cout << "Insufficient funds! Please add more money.\n";
             return;
         }
 
-        userMoney -= selected.price;
-        selected.stock--;
+        // If we get here, the purchase is a go!
+        userMoney -= selected.price;  // Take their money
+        selected.stock--;             // Remove one item from inventory
 
+        // Give the customer feedback
         cout << "\nDispensing " << selected.name << "...\n";
         cout << "Enjoy your " << selected.name << "!\n";
         cout << "Your change: GBP " << fixed << setprecision(2) << userMoney << endl;
 
+        // Try to upsell them (smart business move!)
         suggestItem(selected.category);
+        
+        // Reset money for next transaction
         userMoney = 0;
     }
+
+    // Little marketing trick - suggest a complementary item
+    
     void suggestItem(string category) {
         if (category == "Drink") {
             cout << "?? Suggestion: How about some snacks with your drink?\n";
@@ -103,20 +133,24 @@ public:
     }
 };
 
+// Where everything starts - the main function is like the store manager
 int main() {
-    VendingMachine machine;
+    VendingMachine machine;  // Turn on our vending machine
     int option;
 
     cout << "..............WELCOME TO THE VENDING MACHINE.................\n";
 
+    // Main shopping loop - keeps running until customer says they're done
     do {
-        machine.displayMenu();   
-        machine.insertMoney();   
-        machine.buyItem();       
+        machine.displayMenu();   // Show what's available
+        machine.insertMoney();   // Take their money
+        machine.buyItem();       // Try to complete the purchase
 
+        // Ask if they want to buy more (like a cashier asking "anything else?")
         cout << "\nWould you like to buy another item? (1 = Yes, 0 = No): ";
         cin >> option;
 
+        // Handle invalid responses gracefully
         while (cin.fail() || (option != 0 && option != 1)) {
             cin.clear();
             cin.ignore(1000, '\n');
@@ -124,10 +158,12 @@ int main() {
             cin >> option;
         }
 
-    } while (option == 1);
+    } while (option == 1);  // Keep going as long as they say "Yes"
 
+    // Polite goodbye - customer service matters!
     cout << "\nThank you for using the Vending Machine! Goodbye!\n";
     return 0;
 }
+
 
 
